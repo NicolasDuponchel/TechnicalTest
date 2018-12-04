@@ -25,6 +25,20 @@ class EmployeeAdapter(val context: Context) : RecyclerView.Adapter<EmployeeAdapt
 
     override fun getItemCount() = employees.size
 
+    fun swapItems(fromPosition: Int, toPosition: Int) {
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                employees[i] = employees.set(i + 1, employees[i])
+            }
+        } else {
+            for (i in fromPosition..toPosition + 1) {
+                employees[i] = employees.set(i - 1, employees[i])
+            }
+        }
+
+        notifyItemMoved(fromPosition, toPosition)
+    }
+
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val customView: EmployeeView = view as EmployeeView
     }
