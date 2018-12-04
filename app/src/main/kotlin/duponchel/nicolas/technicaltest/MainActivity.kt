@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() = with(recycler_employees_view) {
         layoutManager = LinearLayoutManager(this@MainActivity)
-        employeeAdapter = EmployeeAdapter(this@MainActivity)
+        employeeAdapter = EmployeeAdapter(this@MainActivity, viewModel.onEmployeePlaceChanged())
         adapter = employeeAdapter
-        val callback = DragManagerAdapter(employeeAdapter, UP.or(DOWN), LEFT.or(RIGHT))
+        val callback = DragManagerAdapter(viewModel.onEmployeePlaceChanged(), UP.or(DOWN), LEFT.or(RIGHT))
         ItemTouchHelper(callback).attachToRecyclerView(this)
     }
 

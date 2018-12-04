@@ -36,4 +36,20 @@ class MainViewModel(private val sharedPrefRepo: SharedPrefRepo) : ViewModel() {
             },
             onError = { Log.e("employees", "${it.message}") }
         )
+
+    fun onEmployeePlaceChanged(): () -> Unit {
+        TODO("Update employees list here in live data")
+
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                employees[i] = employees.set(i + 1, employees[i])
+            }
+        } else {
+            for (i in fromPosition..toPosition + 1) {
+                employees[i] = employees.set(i - 1, employees[i])
+            }
+        }
+
+        notifyItemMoved(fromPosition, toPosition)
+    }
 }

@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import duponchel.nicolas.technicaltest.model.Employee
 
 
-class EmployeeAdapter(val context: Context) : RecyclerView.Adapter<EmployeeAdapter.ViewHolder>() {
+class EmployeeAdapter(val context: Context, onEmployeesChange: () -> Unit) :
+    RecyclerView.Adapter<EmployeeAdapter.ViewHolder>() {
     private val employees = mutableListOf<Employee>()
 
     fun setupItems(employees: List<Employee>) = with(this.employees) {
@@ -26,6 +27,8 @@ class EmployeeAdapter(val context: Context) : RecyclerView.Adapter<EmployeeAdapt
     override fun getItemCount() = employees.size
 
     fun swapItems(fromPosition: Int, toPosition: Int) {
+
+
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
                 employees[i] = employees.set(i + 1, employees[i])

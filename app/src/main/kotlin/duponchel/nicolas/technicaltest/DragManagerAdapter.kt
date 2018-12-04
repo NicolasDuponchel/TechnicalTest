@@ -4,12 +4,20 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 
 
-class DragManagerAdapter(adapter: EmployeeAdapter, dragDirs: Int, swipeDirs: Int) :
+class DragManagerAdapter(
+    val onEmployeePlaceChanged: () -> Pair<Int, Int>,
+    dragDirs: Int,
+    swipeDirs: Int
+) :
     ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
-    var employeeAdapter = adapter
 
-    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-        employeeAdapter.swapItems(viewHolder.adapterPosition, target.adapterPosition)
+    override fun onMove(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
+    ): Boolean {
+//        adapter.swapItems(viewHolder.adapterPosition, target.adapterPosition)
+        onEmployeePlaceChanged()
         return true
     }
 
