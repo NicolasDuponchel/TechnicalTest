@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import duponchel.nicolas.technicaltest.model.Employee
 import kotlinx.android.synthetic.main.employee_view.view.*
 
@@ -22,10 +24,19 @@ class EmployeeView @JvmOverloads constructor(
         layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
     }
 
-    fun setupView(employee: Employee) = with(employee) {
+    fun setupView(employee: Employee): Unit = with(employee) {
         view_first_name.text = first_name
         view_last_name.text = name
         view_email.text = email_adress
         view_job_title.text = job_title
+
+        Glide.with(context)
+            .load(thumb_url)
+            .apply(
+                RequestOptions()
+                    .centerCrop()
+                    .circleCrop()
+            )
+            .into(view_img_employee)
     }
 }
