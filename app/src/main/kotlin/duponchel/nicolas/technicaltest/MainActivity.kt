@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.support.v7.widget.helper.ItemTouchHelper.*
+import duponchel.nicolas.technicaltest.MainViewModel.LoadingStatus.LOADING
+import duponchel.nicolas.technicaltest.MainViewModel.LoadingStatus.NOT_LOADING
 import duponchel.nicolas.technicaltest.utils.viewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -26,8 +28,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.employees.observe(this, Observer {
-            it?.let {
-                with(employeeAdapter) { setupItems(it) }
+            it?.let { employeeAdapter.setupItems(it) }
+        })
+
+        viewModel.loadingStatus.observe(this, Observer {
+            when (it) {
+                LOADING -> main_loader.show()
+                NOT_LOADING -> main_loader.hide()
             }
         })
     }

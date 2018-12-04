@@ -14,6 +14,7 @@ class EmployeeAdapter(private val context: Context) :
     fun setupItems(employees: List<Employee>) = with(this.employees) {
         clear()
         addAll(employees)
+        notifyItemChanged(-1) //I've got a little bug with notifyDataSetChange() due to DragManagerAdapter. It's the only thing I found to correct it quickly
     }
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {

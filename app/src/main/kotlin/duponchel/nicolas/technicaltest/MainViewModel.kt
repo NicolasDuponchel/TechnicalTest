@@ -4,6 +4,8 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
+import duponchel.nicolas.technicaltest.MainViewModel.LoadingStatus.LOADING
+import duponchel.nicolas.technicaltest.MainViewModel.LoadingStatus.NOT_LOADING
 import duponchel.nicolas.technicaltest.api.EmployeeApiServiceFactory
 import duponchel.nicolas.technicaltest.model.Employee
 import duponchel.nicolas.technicaltest.model.Employees
@@ -14,8 +16,13 @@ import io.reactivex.schedulers.Schedulers
 class MainViewModel(private val sharedPrefRepo: SharedPrefRepo) : ViewModel() {
     private val api by lazy { EmployeeApiServiceFactory.createService() }
 
+    enum class LoadingStatus { LOADING, NOT_LOADING }
+
     private val _employees = MutableLiveData<List<Employee>>()
     val employees: LiveData<List<Employee>> = _employees
+
+    private val _loadingStatus = MutableLiveData<LoadingStatus>()
+    val loadingStatus: LiveData<LoadingStatus> = _loadingStatus
 
     init {
         sharedPrefRepo.employee()
@@ -49,6 +56,8 @@ class MainViewModel(private val sharedPrefRepo: SharedPrefRepo) : ViewModel() {
     private fun fetchEmployees() = api.employee()
         .subscribeOn(Schedulers.io())
         .observeOn(Schedulers.io())
+        .doOnSubscribe { _loadingStatus.postValue(LOADING) }
+        .doFinally { _loadingStatus.postValue(NOT_LOADING) }
         .subscribeBy(
             onSuccess = {
                 Log.d("employees", "$it")
