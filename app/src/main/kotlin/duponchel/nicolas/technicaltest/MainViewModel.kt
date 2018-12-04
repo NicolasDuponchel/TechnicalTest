@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import duponchel.nicolas.technicaltest.api.EmployeeApiServiceFactory
 import duponchel.nicolas.technicaltest.model.Employee
-import duponchel.nicolas.technicaltest.model.EmployeeResponse
+import duponchel.nicolas.technicaltest.model.Employees
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
@@ -31,7 +31,7 @@ class MainViewModel(private val sharedPrefRepo: SharedPrefRepo) : ViewModel() {
         .subscribeBy(
             onSuccess = {
                 Log.d("employees", "$it")
-                sharedPrefRepo.saveEmployee(EmployeeResponse(it))
+                sharedPrefRepo.saveEmployee(Employees(it))
                 _employees.postValue(it)
             },
             onError = { Log.e("employees", "${it.message}") }

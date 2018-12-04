@@ -9,9 +9,14 @@
     <android.support.v4.widget.ContentLoadingProgressBar android:layout_width="wrap_content"
                                                          android:layout_height="wrap_content"/>
 
-    <duponchel.nicolas.technicaltest.EmployeeView
-            android:id="@+id/employee_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_employees_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+    </ScrollView>
+
+
 
 </RelativeLayout>

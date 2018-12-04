@@ -3,6 +3,7 @@ package duponchel.nicolas.technicaltest
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import duponchel.nicolas.technicaltest.utils.viewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -21,7 +22,10 @@ class MainActivity : AppCompatActivity() {
     private fun observeViewModel() {
         viewModel.employees.observe(this, Observer {
             it?.let {
-                employee_view.setupView(it.first())
+                with(recycler_employees_view) {
+                    layoutManager = LinearLayoutManager(this@MainActivity)
+                    adapter = EmployeeAdapter(this@MainActivity).apply { setupItems(it) }
+                }
             }
         })
     }
