@@ -27,19 +27,31 @@ class MainActivity : AppCompatActivity() {
     private fun observeViewModel() {
         viewModel.employees.observe(this, Observer {
             it?.let {
-                with(employeeAdapter) {
-                    setupItems(it)
-                    notifyDataSetChanged()
-                }
+                with(employeeAdapter) { setupItems(it) }
             }
         })
     }
 
     private fun setupRecyclerView() = with(recycler_employees_view) {
         layoutManager = LinearLayoutManager(this@MainActivity)
-        employeeAdapter = EmployeeAdapter(this@MainActivity, viewModel.onEmployeePlaceChanged())
+        employeeAdapter = EmployeeAdapter(this@MainActivity)
         adapter = employeeAdapter
-        val callback = DragManagerAdapter(viewModel.onEmployeePlaceChanged(), UP.or(DOWN), LEFT.or(RIGHT))
+        val listener = DragManagerAdapter.Listener(
+            onEmployeePlaceChanged = { fromPosition, toPosition ->
+                viewModel.onEmployeePlaceChanged(
+                    employeeAdapter,
+                    fromPosition,
+                    toPosition
+                )
+            },
+            onFinishSwipping = { viewModel.onFinishSwipping() }
+        )
+        val callback =
+            DragManagerAdapter(
+                listener = listener,
+                dragDirs = UP.or(DOWN),
+                swipeDirs = LEFT.or(RIGHT)
+            )
         ItemTouchHelper(callback).attachToRecyclerView(this)
     }
 

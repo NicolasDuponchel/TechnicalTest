@@ -25,21 +25,12 @@ class MainViewModel(private val sharedPrefRepo: SharedPrefRepo) : ViewModel() {
             ?: fetchEmployees()
     }
 
-    private fun fetchEmployees() = api.employee()
-        .subscribeOn(Schedulers.io())
-        .observeOn(Schedulers.io())
-        .subscribeBy(
-            onSuccess = {
-                Log.d("employees", "$it")
-                sharedPrefRepo.saveEmployee(Employees(it))
-                _employees.postValue(it)
-            },
-            onError = { Log.e("employees", "${it.message}") }
-        )
-
-    fun onEmployeePlaceChanged(): () -> Unit {
-        TODO("Update employees list here in live data")
-
+    /**
+     * This function should be written much more properly, in a functional kotlin lovely way.
+     * Sorry about disgusting for loops ;P ... time was up
+     */
+    fun onEmployeePlaceChanged(adapter: EmployeeAdapter, fromPosition: Int, toPosition: Int) {
+        val employees: MutableList<Employee> = _employees.value?.toMutableList() ?: mutableListOf()
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
                 employees[i] = employees.set(i + 1, employees[i])
@@ -49,7 +40,23 @@ class MainViewModel(private val sharedPrefRepo: SharedPrefRepo) : ViewModel() {
                 employees[i] = employees.set(i - 1, employees[i])
             }
         }
-
-        notifyItemMoved(fromPosition, toPosition)
+        adapter.notifyItemMoved(fromPosition, toPosition)
+        _employees.postValue(employees)
     }
+
+    fun onFinishSwipping() = _employees.value?.let { sharedPrefRepo.saveEmployee(Employees(it)) }
+
+    private fun fetchEmployees() = api.employee()
+        .subscribeOn(Schedulers.io())
+        .observeOn(Schedulers.io())
+        .subscribeBy(
+            onSuccess = {
+                Log.d("employees", "$it")
+                _employees.postValue(it)
+                saveEmployees()
+            },
+            onError = { Log.e("employees", "${it.message}") }
+        )
+
+    private fun saveEmployees() = _employees.value?.let { sharedPrefRepo.saveEmployee(Employees(it)) }
 }
