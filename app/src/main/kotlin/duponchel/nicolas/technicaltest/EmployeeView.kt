@@ -21,7 +21,9 @@ class EmployeeView @JvmOverloads constructor(
     init {
         ConstraintLayout.inflate(context, R.layout.employee_view, this)
         orientation = HORIZONTAL
-        layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        val margin = resources.getDimensionPixelSize(R.dimen.simple_padding)
+        layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { setMargins(margin, margin, margin, margin) }
+        setBackgroundColor(R.color.colorBackground)
     }
 
     fun setupView(employee: Employee): Unit = with(employee) {
