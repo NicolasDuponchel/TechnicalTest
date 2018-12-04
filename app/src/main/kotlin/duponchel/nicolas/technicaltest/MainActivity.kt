@@ -11,6 +11,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var employeeAdapter: EmployeeAdapter
+
     private val viewModel by lazy {
         viewModel { MainViewModel(SharedPrefRepo(this)) }
     }
@@ -18,23 +20,27 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setupRecyclerView()
         observeViewModel()
     }
 
     private fun observeViewModel() {
         viewModel.employees.observe(this, Observer {
             it?.let {
-                with(recycler_employees_view) {
-                    layoutManager = LinearLayoutManager(this@MainActivity)
-                    val employeeAdapter = EmployeeAdapter(this@MainActivity).apply { setupItems(it) }
-                    adapter = employeeAdapter
-
-                    val callback = DragManagerAdapter(employeeAdapter, UP.or(DOWN), LEFT.or(RIGHT))
-                    val helper = ItemTouchHelper(callback)
-                    helper.attachToRecyclerView(this)
+                with(employeeAdapter) {
+                    setupItems(it)
+                    notifyDataSetChanged()
                 }
             }
         })
+    }
+
+    private fun setupRecyclerView() = with(recycler_employees_view) {
+        layoutManager = LinearLayoutManager(this@MainActivity)
+        employeeAdapter = EmployeeAdapter(this@MainActivity)
+        adapter = employeeAdapter
+        val callback = DragManagerAdapter(employeeAdapter, UP.or(DOWN), LEFT.or(RIGHT))
+        ItemTouchHelper(callback).attachToRecyclerView(this)
     }
 
 }
